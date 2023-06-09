@@ -3,13 +3,12 @@ package com.silviatanas.project.inventory;
 import java.util.Date;
 
 public class Contract {
-    int contractNumber;
-    int customerId;
+    String contractNumber;
+    long startDate;
+    long endDate;
+    String customerId;
     String customerName;
-    Date startDate;
-    Date endDate;
-    String env;
-    String product;
-    int row;
-    Contract relatedContracts;
+    String billingSystemId;
+    Environment[] environment;
+    String[] relatedContracts;
 }
