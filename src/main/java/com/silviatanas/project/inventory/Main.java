@@ -1,7 +1,6 @@
 package com.silviatanas.project.inventory;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,29 +9,38 @@ import java.nio.file.StandardCopyOption;
 
 public class Main {
     public void utility() {
-        File folder = new File("/path/to/folder");
+        // setting folder paths
+        String uncheckedFolderName = "Unchecked";
+        String checkedFolderName = "Checked";
+        String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
+
+        File uncheckedFolder = new File(uncheckedFolderName);
         Gson gson = new Gson();
 
-        for (File file : folder.listFiles()) {
-            if (folder.isDirectory()) { // validate directory?
+        // validate if folder paths already exist
+        if (uncheckedFolder.exists() && uncheckedFolder.isDirectory()) {
+            for (File file : uncheckedFolder.listFiles()) {
+                // convert json string to contract object
+                String fileContent = null;
                 try {
-                    // convert json string to contract object
-                    String fileContent = Files.readString(folder.toPath());
-                    Contract contract = gson.fromJson(fileContent, Contract.class);
+                    fileContent = Files.readString(uncheckedFolder.toPath());
 
-                    // move processed files
-                    Files.move(Paths.get("/currentFile"), Paths.get("/targetFolder"), StandardCopyOption.REPLACE_EXISTING);
+                Contract contract = gson.fromJson(fileContent, Contract.class);
 
-                    // data written into csv
-                    BufferedWriter writer = new BufferedWriter(new FileWriter("/csvPath"));
-                    writer.write(contract.toString());
-                    writer.newLine();
+                // move processed files
+                Files.move(Paths.get("/currentFile"), Paths.get("/targetFolder"), StandardCopyOption.REPLACE_EXISTING);
+
+                // data written into csv
+                BufferedWriter writer = new BufferedWriter(new FileWriter("/csvPath"));
+                writer.write(contract.toString());
+                writer.newLine();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else {
-                // fail directory check?
             }
+
+        } else { // create folders if they don't exist
+            Paths.get(desktopPath, "Desktop", uncheckedFolderName);
         }
     }
 
