@@ -1,7 +1,6 @@
 package com.silviatanas.project.inventory;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,14 +14,15 @@ public class Main {
     public static void utility(File uncheckedFolder, File checkedFolder) {
         Gson gson = new Gson();
 
-        //List<Contract> contractList = new ArrayList<>();
-
         // proper date formatting for the milliseconds data
         DateFormat dateConvert = new SimpleDateFormat("yyyy-MM-dd");
 
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter("csv"));
+            writer.write("Contract Number, Customer ID, Customer Name, Billing System ID, " +
+                    "Contract Start, Contract End, Environments, License Info, " +
+                    "Environment Type, Usage Type, swAG Cloud, Related Contracts");
 
             // validate if folder paths already exist
             for (File file : uncheckedFolder.listFiles()) {
@@ -36,7 +36,6 @@ public class Main {
                         System.out.println("5");
 
                         Contract contract = gson.fromJson(fileContent, Contract.class);
-                        //contractList.add(contract);
 
                         // make checked folder if it doesn't exist
                         if (!checkedFolder.exists()) {
@@ -50,16 +49,27 @@ public class Main {
                             Files.move(Paths.get(file.getAbsolutePath()), Paths.get(checkedFolder + File.separator + file.getName()), StandardCopyOption.REPLACE_EXISTING);
                         }
 
-                        // data written into csv
-                        writer.write(contract.getContractNumber() + ", ");
-                        writer.write(contract.getCustomerId() + ", ");
-                        writer.write(contract.getCustomerName() + ", ");
-                        writer.write(dateConvert.format(contract.getStartDate()) + ", ");
-                        writer.write(dateConvert.format(contract.getEndDate()) + ", ");
-                        writer.write(Arrays.toString(contract.getEnvironment()) + ", ");
-                        writer.write(Arrays.toString(contract.getRelatedContracts()));
-                        writer.newLine();
-                        writer.flush();
+                        for (Environment e : contract.getEnvironments()) {
+                            System.out.println("8");
+
+                            // data written into csv
+                            writer.write(contract.getContractNumber() + ", ");
+                            writer.write(contract.getCustomerId() + ", ");
+                            writer.write(contract.getCustomerName() + ", ");
+                            writer.write(contract.getBillingSystemId() + ", ");
+                            writer.write(dateConvert.format(contract.getStartDate()) + ", ");
+                            writer.write(dateConvert.format(contract.getEndDate()) + ", ");
+                            writer.write(e.name + ", ");
+                            writer.write(Arrays.toString(e.licenseInfo) + ", ");
+                            writer.write(e.environmentType + ", ");
+                            writer.write(e.usageType + ", ");
+                            writer.write(e.swAGCloud + ", ");
+                            writer.write(Arrays.toString(contract.getRelatedContracts()));
+                            writer.newLine();
+                            writer.flush();
+                        }
+
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -70,13 +80,21 @@ public class Main {
         }
     }
 
+    public static void parseLicenseInfo(String info) {
+        Gson gson = new Gson();
+
+        LicenseInfo licenseInfo = gson.fromJson(info, LicenseInfo.class);
+        System.out.println(licenseInfo.getRow());
+        System.out.println(licenseInfo.getUnit());
+        System.out.println(Arrays.toString(licenseInfo.getProductCodes()));
+    }
+
     public static void main(String[] args) {
         // setting folder paths
         String downloadPath = System.getProperty("user.home") + File.separator + "Downloads";
         File uncheckedFolder = new File(downloadPath + File.separator + "Unchecked");
         File checkedFolder = new File(downloadPath + File.separator + "Checked");
         System.out.println("1");
-        System.out.println(uncheckedFolder);
 
         if (uncheckedFolder.exists() && uncheckedFolder.isDirectory()) {
             System.out.println("2");
