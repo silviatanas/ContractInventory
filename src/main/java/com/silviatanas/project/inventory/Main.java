@@ -23,6 +23,7 @@ public class Main {
             writer.write("Contract Number, Customer ID, Customer Name, Billing System ID, " +
                     "Contract Start, Contract End, Environments, License Info, " +
                     "Environment Type, Usage Type, swAG Cloud, Related Contracts");
+            writer.newLine();
 
             // validate if folder paths already exist
             for (File file : uncheckedFolder.listFiles()) {
@@ -59,11 +60,25 @@ public class Main {
                             writer.write(contract.getBillingSystemId() + ", ");
                             writer.write(dateConvert.format(contract.getStartDate()) + ", ");
                             writer.write(dateConvert.format(contract.getEndDate()) + ", ");
+
+                            writer.newLine();
                             writer.write(e.name + ", ");
-                            writer.write(Arrays.toString(e.licenseInfo) + ", ");
+                            writer.write(e.licenseInfo + ", ");
                             writer.write(e.environmentType + ", ");
                             writer.write(e.usageType + ", ");
                             writer.write(e.swAGCloud + ", ");
+
+                            writer.newLine();
+                            e.setLicenseInfoObjects(parseLicenseInfo(e.licenseInfo));
+                            for (LicenseInfo l : e.licenseInfoObjects) {
+                                writer.write(l.getRow() + ", ");
+                                writer.write(l.getUnit() + ", ");
+                                writer.write(Arrays.toString(l.getProductCodes()));
+                                writer.newLine();
+                            }
+                            writer.write(Arrays.toString(e.licenseInfoObjects));
+
+                            writer.newLine();
                             writer.write(Arrays.toString(contract.getRelatedContracts()));
                             writer.newLine();
                             writer.flush();
@@ -80,13 +95,11 @@ public class Main {
         }
     }
 
-    public static void parseLicenseInfo(String info) {
+    public static LicenseInfo[] parseLicenseInfo(String info) {
         Gson gson = new Gson();
 
-        LicenseInfo licenseInfo = gson.fromJson(info, LicenseInfo.class);
-        System.out.println(licenseInfo.getRow());
-        System.out.println(licenseInfo.getUnit());
-        System.out.println(Arrays.toString(licenseInfo.getProductCodes()));
+        LicenseInfo[] licenseInfo = gson.fromJson(info, LicenseInfo[].class);
+        return licenseInfo;
     }
 
     public static void main(String[] args) {

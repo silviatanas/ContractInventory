@@ -2,7 +2,8 @@ package com.silviatanas.project.inventory;
 
 public class Environment {
     String name;
-    LicenseInfo[] licenseInfo;
+    String licenseInfo;
+    LicenseInfo[] licenseInfoObjects;
     String environmentType;
     String usageType;
     boolean swAGCloud;
@@ -11,8 +12,16 @@ public class Environment {
         return name;
     }
 
-    public LicenseInfo[] getLicenseInfo() {
+    public String getLicenseInfo() {
         return licenseInfo;
+    }
+
+    public LicenseInfo[] getLicenseInfoObjects() {
+        return licenseInfoObjects;
+    }
+
+    public void setLicenseInfoObjects(LicenseInfo[] licenseInfoObjects) {
+        this.licenseInfoObjects = licenseInfoObjects;
     }
 
     public String getEnvironmentType() {
