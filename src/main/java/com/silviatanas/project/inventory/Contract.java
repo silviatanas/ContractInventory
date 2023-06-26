@@ -1,5 +1,20 @@
 package com.silviatanas.project.inventory;
 
+/**
+ * This is a java presentation of a json string
+ *
+ * The file has the following structure:
+ * {
+ *     "contractNumber": "<>",
+ *     "startDate": "<>",
+ *     "endDate": "<>",
+ *     "customerId": "<>",
+ *     "customerName": "<>",
+ *     "billingSystemId": "<>",
+ *     "environments": [{<>}],
+ *     "relatedContracts": [<>]
+ * }
+ */
 public class Contract {
     String contractNumber;
     long startDate;

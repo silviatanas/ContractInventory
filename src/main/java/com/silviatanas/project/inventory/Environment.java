@@ -1,5 +1,19 @@
 package com.silviatanas.project.inventory;
 
+/**
+ * This is a java presentation of the Environments object array
+ * from the initial json object presentation:
+ * {@link com.silviatanas.project.inventory.Contract}
+ *
+ * It has the following structure:
+ * {
+ *      "name": "<>",
+ *      "licenseInfo": "{<>}",
+ *      "environmentType": "<>",
+ *      "usageType": "<>",
+ *      "swAGCloud": true/false
+ * }
+ */
 public class Environment {
     String name;
     String licenseInfo;
