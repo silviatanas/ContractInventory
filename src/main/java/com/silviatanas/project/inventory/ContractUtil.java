@@ -50,6 +50,7 @@ public class ContractUtil {
 
                 } catch (IOException e) {
                     System.out.println("Error reading file data");
+                    // log instead of print
                     throw new RuntimeException(e);
                 }
             }
@@ -58,64 +59,57 @@ public class ContractUtil {
         return contractList.toArray(new Contract[0]);
     }
 
-    public static void writeContractsToCsv(Contract[] contractList) {
+    public static void writeContractsToCsv(Contract[] contractList) throws IOException {
 
         BufferedWriter writer;
 
         // proper date formatting for the milliseconds data
         DateFormat dateConvert = new SimpleDateFormat("yyyy-MM-dd");
 
-        try {
-            // writing header for csv file
-            writer = new BufferedWriter(new FileWriter("csv"));
-            writer.write("Contract Number, Customer ID, Customer Name, Billing System ID, " +
-                    "Contract Start, Contract End, Environments, License Info, " +
-                    "Environment Type, Usage Type, swAG Cloud, Related Contracts");
-            writer.newLine();
 
-            // iterating the data from read method
-            for (Contract contract : contractList) {
-                for (Environment e : contract.getEnvironments()) {
-                    // licenseInfo to LicenseInfo objects
-                    e.setLicenseInfoObjects(parseLicenseInfo(e.getLicenseInfo()));
+        // writing header for csv file
+        writer = new BufferedWriter(new FileWriter("contracts.csv"));
+        writer.write("Contract Number, Customer ID, Customer Name, Billing System ID, " +
+                "Contract Start, Contract End, Environments, License Info, " +
+                "Environment Type, Usage Type, swAG Cloud, Related Contracts");
+        writer.newLine();
 
-                    for (LicenseInfo l : e.getLicenseInfoObjects()) {
+        // iterating the data from read method
+        for (Contract contract : contractList) {
+            for (Environment e : contract.getEnvironments()) {
+                // licenseInfo to LicenseInfo objects
+                e.setLicenseInfoObjects(parseLicenseInfo(e.getLicenseInfo()));
+
+                for (LicenseInfo l : e.getLicenseInfoObjects()) {
+                    for (Object p : l.getProductCodes()) {
 
                         // contract data written into csv
-                        try {
-                            // main param
-                            writer.write(contract.getContractNumber() + ", ");
-                            writer.write(contract.getCustomerId() + ", ");
-                            writer.write(contract.getCustomerName() + ", ");
-                            writer.write(contract.getBillingSystemId() + ", ");
-                            writer.write(dateConvert.format(contract.getStartDate()) + ", ");
-                            writer.write(dateConvert.format(contract.getEndDate()) + ", ");
 
-                            // environments
-                            writer.write(e.getName() + ", ");
-                            // licenseInfo
-                            writer.write(l.getRow() + ", ");
-                            writer.write(l.getUnit() + ", ");
-                            writer.write(Arrays.toString(l.getProductCodes()));
-                            // licenseInfo end
-                            writer.write(e.getEnvironmentType() + ", ");
-                            writer.write(e.getUsageType() + ", ");
-                            writer.write(e.isSwAGCloud() + ", ");
-                            writer.write(Arrays.toString(contract.getRelatedContracts()));
+                        // main param
+                        writer.write(contract.getContractNumber() + ", ");
+                        writer.write(contract.getCustomerId() + ", ");
+                        writer.write(contract.getCustomerName() + ", ");
+                        writer.write(contract.getBillingSystemId() + ", ");
+                        writer.write(dateConvert.format(contract.getStartDate()) + ", ");
+                        writer.write(dateConvert.format(contract.getEndDate()) + ", ");
 
-                            writer.newLine();
-                            writer.flush();
+                        // environments
+                        writer.write(e.getName() + ", ");
+                        // licenseInfo
+                        writer.write(l.getRow() + ", ");
+                        writer.write(l.getUnit() + ", ");
+                        writer.write(p + ", ");
+                        // licenseInfo end
+                        writer.write(e.getEnvironmentType() + ", ");
+                        writer.write(e.getUsageType() + ", ");
+                        writer.write(e.isSwAGCloud() + ", ");
+                        writer.write(Arrays.toString(contract.getRelatedContracts()));
 
-                        } catch (IOException ex) {
-                            System.out.println("Error writing contract data");
-                            throw new RuntimeException(ex);
-                        }
+                        writer.newLine();
+                        writer.flush();
                     }
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error writing initial data");
-            throw new RuntimeException(e);
         }
     }
 

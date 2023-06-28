@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class Main extends ContractUtil {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         File uncheckedFolder;
         File checkedFolder;
