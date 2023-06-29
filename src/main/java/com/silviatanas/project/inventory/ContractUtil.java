@@ -70,8 +70,9 @@ public class ContractUtil {
         // writing header for csv file
         writer = new BufferedWriter(new FileWriter("contracts.csv"));
         writer.write("Contract Number, Customer ID, Customer Name, Billing System ID, " +
-                "Contract Start, Contract End, Environments, License Info, " +
-                "Environment Type, Usage Type, swAG Cloud, Related Contracts");
+                "Contract Start, Contract End, Environment Name, Row, " +
+                "Unit, Product Code, Environment Type, Usage Type, " +
+                "swAG Cloud, Related Contracts");
         writer.newLine();
 
         // iterating the data from read method
@@ -103,7 +104,9 @@ public class ContractUtil {
                         writer.write(e.getEnvironmentType() + ", ");
                         writer.write(e.getUsageType() + ", ");
                         writer.write(e.isSwAGCloud() + ", ");
-                        writer.write(Arrays.toString(contract.getRelatedContracts()));
+                        writer.write(Arrays.toString(contract.getRelatedContracts())
+                                .replace("[", "")
+                                .replace("]", ""));
 
                         writer.newLine();
                         writer.flush();

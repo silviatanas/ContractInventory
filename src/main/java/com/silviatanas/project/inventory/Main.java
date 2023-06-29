@@ -12,15 +12,11 @@ public class Main extends ContractUtil {
         String configPath = "config.properties";
 
         Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(configPath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        properties.load(new FileInputStream(configPath));
 
         if (args.length > 0) {
             // args passed in configuration:
-            // contract.unchecked c:/temp1/uncheckedFilePath contract.checked c:/temp2/checkedFilePath
+            // contract.unchecked c:/example/uncheckedFilePath contract.checked c:/example/checkedFilePath
             uncheckedFolder = new File(args[1]);
             checkedFolder = new File(args[3]);
 
