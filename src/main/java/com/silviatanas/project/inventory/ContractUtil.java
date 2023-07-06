@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ContractUtil {
-    public static Contract[] readContractsFromJson(File uncheckedFolder, File checkedFolder) {
+    public static Contract[] readContractsFromJson(File uncheckedFolder, File checkedFolder) throws IOException {
         // gson for json conversion
         Gson gson = new Gson();
 
@@ -30,28 +30,20 @@ public class ContractUtil {
 
                 // convert json string to Contract object
                 String fileContent = null;
+                fileContent = Files.readString(file.toPath());
+                Contract contract = gson.fromJson(fileContent, Contract.class);
 
-                try {
-                    fileContent = Files.readString(file.toPath());
-                    Contract contract = gson.fromJson(fileContent, Contract.class);
+                // add each object to the list
+                contractList.add(contract);
 
-                    // add each object to the list
-                    contractList.add(contract);
+                // make Checked folder if it doesn't exist
+                if (!checkedFolder.exists()) {
+                    checkedFolder.mkdir();
+                }
 
-                    // make Checked folder if it doesn't exist
-                    if (!checkedFolder.exists()) {
-                        checkedFolder.mkdir();
-                    }
-
-                    // move processed files to Checked folder
-                    if (checkedFolder.isDirectory()) {
-                        Files.move(Paths.get(file.getAbsolutePath()), Paths.get(checkedFolder + File.separator + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-                    }
-
-                } catch (IOException e) {
-                    System.out.println("Error reading file data");
-                    // log instead of print
-                    throw new RuntimeException(e);
+                // move processed files to Checked folder
+                if (checkedFolder.isDirectory()) {
+                    Files.move(Paths.get(file.getAbsolutePath()), Paths.get(checkedFolder + File.separator + file.getName()), StandardCopyOption.REPLACE_EXISTING);
                 }
             }
         }

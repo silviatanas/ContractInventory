@@ -9,10 +9,9 @@ public class Main extends ContractUtil {
         File uncheckedFolder;
         File checkedFolder;
 
-        String configPath = "config.properties";
+        String configPath = "../res/config.properties";
 
         Properties properties = new Properties();
-        properties.load(new FileInputStream(configPath));
 
         if (args.length > 0) {
             // args passed in configuration:
@@ -27,6 +26,7 @@ public class Main extends ContractUtil {
 
         } else if (properties != null) {
             // config.properties
+            properties.load(new FileInputStream(configPath));
             uncheckedFolder = new File(properties.getProperty("contract.unchecked"));
             checkedFolder = new File(properties.getProperty("contract.checked"));
 
